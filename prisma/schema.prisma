@@ -9,16 +9,19 @@ datasource db {
 model Course {
   id          String     @id @default(uuid())
   title       String
-  description String?
+  department  String
+  term        String
   materials   Material[]
   createdAt   DateTime   @default(now())
 }
 
 model Material {
-  id        String   @id @default(uuid())
-  title     String
-  url       String
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  title       String
+  type        String   // Lecture Notes, Assignment, Syllabus, Other
+  description String?
+  url         String
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
 }
