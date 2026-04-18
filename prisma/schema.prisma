@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Course {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  materials   Material[]
+  createdAt   DateTime   @default(now())
+}
+
+model Material {
+  id        String   @id @default(uuid())
+  title     String
+  url       String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
