@@ -51,12 +51,12 @@ export default function CourseView() {
         </header>
 
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
-          <h2 className="text-lg font-semibold mb-4">Add Material</h2>
+          <h2 className="text-lg font-semibold mb-4 text-gray-800">Add Material</h2>
           <Form method="post" className="space-y-4">
             <input type="hidden" name="intent" value="add-material" />
             <div className="flex gap-4">
-              <input type="text" name="title" placeholder="Material Title" required className="flex-1 px-3 py-2 border rounded-md" />
-              <select name="type" required className="flex-1 px-3 py-2 border rounded-md">
+              <input type="text" name="title" placeholder="Material Title" required className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white placeholder-gray-500" />
+              <select name="type" required className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white">
                 <option value="">Select Type...</option>
                 <option value="Lecture Notes">Lecture Notes</option>
                 <option value="Assignment">Assignment</option>
@@ -65,10 +65,10 @@ export default function CourseView() {
               </select>
             </div>
             <div className="flex gap-4">
-              <input type="text" name="description" placeholder="Short Description (Optional)" className="flex-1 px-3 py-2 border rounded-md" />
-              <input type="url" name="url" placeholder="Link (e.g. https://drive.google.com/...)" required className="flex-1 px-3 py-2 border rounded-md" />
+              <input type="text" name="description" placeholder="Short Description (Optional)" className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white placeholder-gray-500" />
+              <input type="url" name="url" placeholder="Link (e.g. https://drive.google.com/...)" required className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white placeholder-gray-500" />
             </div>
-            <button type="submit" className="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-900">
+            <button type="submit" className="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-900 cursor-pointer">
               Add Material
             </button>
           </Form>
@@ -89,7 +89,7 @@ export default function CourseView() {
               <Form method="post" onSubmit={(e) => !confirm("Delete material?") && e.preventDefault()}>
                 <input type="hidden" name="intent" value="delete-material" />
                 <input type="hidden" name="materialId" value={mat.id} />
-                <button type="submit" className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors">
+                <button type="submit" className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors cursor-pointer">
                   <Trash2 className="w-5 h-5" />
                 </button>
               </Form>

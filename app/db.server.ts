@@ -1,11 +1,13 @@
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import pkg from "@prisma/client";
 
-let prisma: PrismaClient;
+const { PrismaClient } = pkg;
+
+let prisma: typeof PrismaClient extends new (...args: any) => infer R ? R : any;
 
 declare global {
-  var __db: PrismaClient | undefined;
+  var __db: typeof prisma | undefined;
 }
 
 const connectionString = process.env.DATABASE_URL;
