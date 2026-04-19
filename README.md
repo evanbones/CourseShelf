@@ -1,87 +1,90 @@
-# Welcome to React Router!
+# CourseShelf
 
-A modern, production-ready template for building full-stack React applications using React Router.
+CourseShelf is a streamlined web application designed for instructors to seamlessly manage their course lists and associated learning materials.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Approach
 
-## Features
+CourseShelf is built using a modern, unified full-stack approach via React Router. By leveraging React Router's loaders and actions, the application handles both server-side data fetching and client-side UI rendering within the same route files, eliminating the need for a separate REST API. State mutations and form submissions are handled natively by the framework. For data persistence, Prisma ORM provides a deeply integrated, type-safe interface to a PostgreSQL database, while Tailwind CSS is used to deliver a clean, responsive, and functional user interface without the overhead of heavy component libraries.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## System Architecture
 
-## Getting Started
+* **Frontend / UI:** React, styled with Tailwind CSS, running within React Router's unified architecture.
+* **Backend / API:** Server-side loaders and actions (Node.js) provided by React Router.
+* **Database:** PostgreSQL database, managed and queried using Prisma ORM with the `pg` adapter.
+* **Testing:** Vitest for unit and integration testing; Playwright for end-to-end testing.
+* **Containerization:** Dockerized backend/database environment using Docker Compose.
 
-### Installation
+## Setup Instructions
 
-Install the dependencies:
+### Prerequisites
+* Node.js (v18 or higher recommended)
+* Docker and Docker Compose
+* npm (or your preferred package manager)
 
+---
+
+### Runing via Docker (Recommended)
+
+This is the easiest way to run the application. The database and the web server are fully containerized, and the database schema will initialize automatically.
+
+1. **Start the stack:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+2. **Access the app:**
+   Open your browser and navigate to `http://localhost:3000`.
+
+*(To stop the application, run `docker compose down`)*
+
+---
+
+### Local Development Setup
+
+Use this method if you want to run the Vite development server locally with hot-module reloading.
+
+**1. Environment Setup**
+
+Clone the repository and install dependencies:
 ```bash
 npm install
 ```
 
-### Development
+Create a `.env` file in the root directory and configure your PostgreSQL database URL to point to the exposed Docker port (5433):
+```env
+DATABASE_URL="postgresql://admin:password123@localhost:5433/courseshelf?schema=public"
+```
 
-Start the development server with HMR:
+**2. Start the Database**
+Use Docker Compose to spin up the database:
+```bash
+docker compose up -d db
+```
 
+**3. Initialize the Database Schema**
+Run Prisma to push the schema to your local database and generate the Prisma Client:
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+**4. Run the Application**
+Start the development server:
 ```bash
 npm run dev
 ```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+The application will be available at `http://localhost:5173`.
 
 ---
 
-Built with ❤️ using React Router.
+## Running Tests
+**Unit & Integration Tests (Vitest):**
+```bash
+npm run test
+```
+
+**End-to-End Tests (Playwright):**
+```bash
+npx playwright install # Only needed the first time
+npx playwright test
+```
