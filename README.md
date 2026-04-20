@@ -1,14 +1,14 @@
 # CourseShelf
 
-CourseShelf is a streamlined web application designed for instructors to seamlessly manage their course lists and associated learning materials.
+CourseShelf is a simple React Router v7 web application designed for instructors to manage their course lists and learning materials.
 
 ## Approach
 
-CourseShelf is built using a modern, unified full-stack approach via React Router. By leveraging React Router's loaders and actions, the application handles both server-side data fetching and client-side UI rendering within the same route files, eliminating the need for a separate REST API. State mutations and form submissions are handled natively by the framework. For data persistence, Prisma ORM provides a deeply integrated, type-safe interface to a PostgreSQL database, while Tailwind CSS is used to deliver a clean, responsive, and functional user interface without the overhead of heavy component libraries.
+CourseShelf is built using a unified full-stack approach via React Router. By using React Router's loaders and actions, the application handles both server-side data fetching and client-side UI rendering in the same route files, removing the need for a separate REST framework. State changes and form submissions are handled natively by the framework. For data storage, Prisma ORM provides an integrated, type-safe interface for a PostgreSQL database, while Tailwind is used to deliver a clean and functional user interface without the heavy component libraries.
 
 ## System Architecture
 
-* **Frontend / UI:** React, styled with Tailwind CSS, running within React Router's unified architecture.
+* **Frontend / UI:** React, styled with Tailwind CSS, running with React Router v7's unified stack.
 * **Backend / API:** Server-side loaders and actions (Node.js) provided by React Router.
 * **Database:** PostgreSQL database, managed and queried using Prisma ORM with the `pg` adapter.
 * **Testing:** Vitest for unit and integration testing; Playwright for end-to-end testing.
@@ -41,7 +41,7 @@ This is the easiest way to run the application. The database and the web server 
 
 ### Local Development Setup
 
-Use this method if you want to run the Vite development server locally with hot-module reloading.
+Use this method if you want to run the Vite development server locally with hot-reloading.
 
 **1. Environment Setup**
 
@@ -50,7 +50,7 @@ Clone the repository and install dependencies:
 npm install
 ```
 
-Create a `.env` file in the root directory and configure your PostgreSQL database URL to point to the exposed Docker port (5433):
+Create a `.env` file in the root directory and configure your PostgreSQL database URL to point to the exposed Docker port (5433 by default):
 ```env
 DATABASE_URL="postgresql://admin:password123@localhost:5433/courseshelf?schema=public"
 ```
@@ -88,3 +88,8 @@ npm run test
 npx playwright install # Only needed the first time
 npx playwright test
 ```
+
+### Test Coverage Use Cases
+
+* **Unit Tests:** Validates the business logic for term formatting, validates allowed departments, and ensures appropriate error messages are generated for invalid inputs.
+* **E2E Tests:** Covers the primary user interaction flows: creating a new course and verifying it appears on the dashboard, as well as navigating into a course to add a new material link.
