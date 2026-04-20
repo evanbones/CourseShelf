@@ -1,0 +1,26 @@
+@startuml Database Diagram
+hide circle
+skinparam linetype ortho
+
+entity "Course" {
+  * **id** : String <<PK>>
+  --
+  * title : String
+  * department : String
+  * term : String
+  * createdAt : DateTime
+}
+
+entity "Material" {
+  * **id** : String <<PK>>
+  --
+  * title : String
+  * type : String
+  description : String
+  * url : String
+  * courseId : String <<FK>>
+  * createdAt : DateTime
+}
+
+Course "1" *-- "0..*" Material : contains
+@enduml

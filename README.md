@@ -17,6 +17,8 @@ CourseShelf is built using a unified full-stack approach via React Router. By us
 * **Testing:** Vitest for unit and integration testing; Playwright for end-to-end testing.
 * **Containerization:** Dockerized backend/database environment using Docker Compose.
 
+![Database Schema](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/evanbones/CourseShelf/main/schema.puml)
+
 ## Setup Instructions
 
 ### Prerequisites
