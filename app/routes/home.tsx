@@ -1,8 +1,11 @@
-import { Form, useLoaderData, useActionData, Link } from "react-router";
+import { useLoaderData, useActionData } from "react-router";
 import type { ActionFunctionArgs } from "react-router";
-import { BookOpen, Plus, Trash2 } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { prisma } from "../db.server";
 import { validateCourseInput } from "../utils/validation";
+
+import { AddCourseForm } from "../components/AddCourseForm";
+import { CourseCard } from "../components/CourseCard";
 
 export async function loader() {
   const courses = await prisma.course.findMany({
@@ -37,80 +40,38 @@ export async function action({ request }: ActionFunctionArgs) {
   return null;
 }
 
-export default function Index() {
+export default function Home() {
   const { courses } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <header className="flex items-center gap-3 mb-8">
-          <BookOpen className="w-8 h-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-900">CourseShelf Dashboard</h1>
+    <div className="min-h-screen bg-stone-50 p-6 md:p-12 text-stone-900 font-sans selection:bg-stone-200">
+      <div className="max-w-5xl mx-auto space-y-10">
+        
+        <header className="flex items-center gap-4">
+          <div className="bg-stone-900 p-3 rounded-2xl shadow-sm">
+            <BookOpen className="w-8 h-8 text-stone-50" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-stone-900">CourseShelf</h1>
+            <p className="text-stone-500 font-medium mt-1 text-lg">Manage your curriculum</p>
+          </div>
         </header>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Course</h2>
-          {actionData?.error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">{actionData.error}</div>
-          )}
-          <Form method="post" className="flex flex-col gap-4">
-            <input type="hidden" name="intent" value="create-course" />
-            <div className="flex gap-4">
-              <input
-                type="text"
-                name="title"
-                placeholder="Course Title"
-                required
-                className="flex-2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 bg-white placeholder-gray-500"
-              />
-              <select name="department" className="flex-1 px-4 py-2 border rounded-md text-gray-900 bg-white" required>
-                <option value="">Select Dept...</option>
-                <option value="CS">Computer Science</option>
-                <option value="MATH">Mathematics</option>
-                <option value="PHYSICS">Physics</option>
-                <option value="ENGLISH">English</option>
-                <option value="HISTORY">History</option>
-              </select>
-              <input
-                type="text"
-                name="term"
-                placeholder="Term (e.g., 2026S1)"
-                required
-                className="flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 bg-white placeholder-gray-500"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 flex justify-center items-center gap-2 cursor-pointer"
-            >
-              <Plus className="w-4 h-4" /> Create Course
-            </button>
-          </Form>
-        </div>
+        <AddCourseForm error={actionData?.error} />
 
-        <div className="grid gap-4">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {courses.map((course) => (
-            <div key={course.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-blue-300 transition-colors flex justify-between items-center">
-              <Link to={`/courses/${course.id}`} className="flex-1 block">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">{course.title}</h3>
-                  <p className="text-gray-600">{course.department} - Term {course.term}</p>
-                </div>
-                <div className="text-sm text-gray-500 mt-2">
-                  {course._count.materials} Materials
-                </div>
-              </Link>
-              <Form method="post" onSubmit={(e) => !confirm("Delete this course and all its materials?") && e.preventDefault()}>
-                <input type="hidden" name="intent" value="delete-course" />
-                <input type="hidden" name="courseId" value={course.id} />
-                <button type="submit" className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors cursor-pointer" aria-label="Delete Course">
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              </Form>
-            </div>
+            <CourseCard key={course.id} course={course} />
           ))}
-        </div>
+          
+          {courses.length === 0 && (
+            <div className="col-span-full py-12 text-center text-stone-400 font-medium text-lg border-2 border-dashed border-stone-200 rounded-4xl">
+              No courses created yet. Let's get started above!
+            </div>
+          )}
+        </section>
+
       </div>
     </div>
   );

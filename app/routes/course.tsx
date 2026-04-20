@@ -1,101 +1,77 @@
-import { Form, useLoaderData, Link } from "react-router";
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { useLoaderData, useActionData } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
+import { BookOpen } from "lucide-react";
 import { prisma } from "../db.server";
+import { validateCourseInput } from "../utils/validation";
 
-export async function loader({ params }: LoaderFunctionArgs) {
-  const course = await prisma.course.findUnique({
-    where: { id: params.courseId },
-    include: { materials: { orderBy: { createdAt: "desc" } } },
+import { AddCourseForm } from "../components/AddCourseForm";
+import { CourseCard } from "../components/CourseCard";
+
+export async function loader() {
+  const courses = await prisma.course.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { _count: { select: { materials: true } } }
   });
-  if (!course) throw new Response("Not Found", { status: 404 });
-  return { course };
+  return { courses };
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-
-  if (intent === "add-material") {
+  
+  if (intent === "create-course") {
     const title = formData.get("title") as string;
-    const type = formData.get("type") as string;
-    const description = formData.get("description") as string;
-    const url = formData.get("url") as string;
-    
-    await prisma.material.create({
-      data: { title, type, description, url, courseId: params.courseId! }
-    });
+    const department = formData.get("department") as string;
+    const term = formData.get("term") as string;
+
+    const error = validateCourseInput(title, department, term);
+    if (error) return { error };
+
+    await prisma.course.create({ data: { title, department, term } });
+    return { success: true };
   }
 
-  if (intent === "delete-material") {
-    const materialId = formData.get("materialId") as string;
-    await prisma.material.delete({ where: { id: materialId } });
+  if (intent === "delete-course") {
+    const courseId = formData.get("courseId") as string;
+    await prisma.course.delete({ where: { id: courseId } });
+    return { success: true };
   }
-
-  return { success: true };
+  
+  return null;
 }
 
-export default function CourseView() {
-  const { course } = useLoaderData<typeof loader>();
+export default function Home() {
+  const { courses } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <Link to="/" className="flex items-center gap-2 text-blue-600 hover:underline mb-6">
-          <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-        </Link>
-
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{course.title}</h1>
-          <p className="text-gray-600">{course.department} - {course.term}</p>
+    <div className="min-h-screen bg-stone-50 p-6 md:p-12 text-stone-900 font-sans selection:bg-stone-200">
+      <div className="max-w-5xl mx-auto space-y-10">
+        
+        <header className="flex items-center gap-4">
+          <div className="bg-stone-900 p-3 rounded-2xl shadow-sm">
+            <BookOpen className="w-8 h-8 text-stone-50" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-stone-900">CourseShelf</h1>
+            <p className="text-stone-500 font-medium mt-1 text-lg">Manage your curriculum</p>
+          </div>
         </header>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-gray-800">Add Material</h2>
-          <Form method="post" className="space-y-4">
-            <input type="hidden" name="intent" value="add-material" />
-            <div className="flex gap-4">
-              <input type="text" name="title" placeholder="Material Title" required className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white placeholder-gray-500" />
-              <select name="type" required className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white">
-                <option value="">Select Type...</option>
-                <option value="Lecture Notes">Lecture Notes</option>
-                <option value="Assignment">Assignment</option>
-                <option value="Syllabus">Syllabus</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div className="flex gap-4">
-              <input type="text" name="description" placeholder="Short Description (Optional)" className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white placeholder-gray-500" />
-              <input type="url" name="url" placeholder="Link (e.g. https://drive.google.com/...)" required className="flex-1 px-3 py-2 border rounded-md text-gray-900 bg-white placeholder-gray-500" />
-            </div>
-            <button type="submit" className="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-900 cursor-pointer">
-              Add Material
-            </button>
-          </Form>
-        </div>
+        <AddCourseForm error={actionData?.error} />
 
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-800">Materials</h2>
-          {course.materials.length === 0 && <p className="text-gray-500">No materials added yet.</p>}
-          {course.materials.map(mat => (
-            <div key={mat.id} className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start">
-              <div>
-                <a href={mat.url} target="_blank" rel="noreferrer" className="text-lg font-semibold text-blue-600 hover:underline">
-                  {mat.title}
-                </a>
-                <span className="ml-3 px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-full">{mat.type}</span>
-                {mat.description && <p className="text-gray-600 text-sm mt-1">{mat.description}</p>}
-              </div>
-              <Form method="post" onSubmit={(e) => !confirm("Delete material?") && e.preventDefault()}>
-                <input type="hidden" name="intent" value="delete-material" />
-                <input type="hidden" name="materialId" value={mat.id} />
-                <button type="submit" className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors cursor-pointer">
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              </Form>
-            </div>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {courses.map((course) => (
+            <CourseCard key={course.id} course={course} />
           ))}
-        </div>
+          
+          {courses.length === 0 && (
+            <div className="col-span-full py-12 text-center text-stone-400 font-medium text-lg border-2 border-dashed border-stone-200 rounded-4xl">
+              No courses created yet. Let's get started above!
+            </div>
+          )}
+        </section>
+
       </div>
     </div>
   );
