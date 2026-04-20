@@ -46,5 +46,20 @@ jobs:
           DATABASE_URL: postgresql://admin:password123@localhost:5432/courseshelf_test?schema=public
         run: npx prisma migrate deploy
 
+      - name: Run Unit Tests
+        env:
+          CI: true
+          DATABASE_URL: postgresql://admin:password123@localhost:5432/courseshelf_test?schema=public
+        run: npm run test
+
       - name: Build Application
         run: npm run build
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run End-to-End Tests
+        env:
+          CI: true
+          DATABASE_URL: postgresql://admin:password123@localhost:5432/courseshelf_test?schema=public
+        run: npm run test:e2e
