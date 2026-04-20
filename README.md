@@ -1,5 +1,8 @@
 # CourseShelf
 
+[![Build Status](https://github.com/evanbones/CourseShelf/actions/workflows/main.yml/badge.svg)](https://github.com/evanbones/CourseShelf/actions)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/evanbones/GIT-2026/blob/main/LICENSE)
+
 CourseShelf is a simple React Router v7 web application designed for instructors to manage their course lists and learning materials.
 
 ## Approach
