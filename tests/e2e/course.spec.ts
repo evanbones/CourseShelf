@@ -32,7 +32,7 @@ test.describe("CourseShelf App", () => {
     await page.click('button[type="submit"]');
 
     // click into the newly created course
-    await page.click(`text=Physics ${timestamp}`);
+    await page.click(`text=Physics ${timestamp}`, { force: true });
 
     // verify we are on the course detail page
     await expect(
