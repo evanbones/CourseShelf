@@ -51,7 +51,7 @@ export function AddCourseForm({ error }: AddCourseFormProps) {
         
         <button
           type="submit"
-          className="self-start bg-stone-900 text-white px-8 py-4 rounded-full hover:bg-stone-800 transition-transform hover:-translate-y-0.5 active:translate-y-0 font-semibold text-lg flex items-center gap-2 cursor-pointer shadow-md"
+          className="self-start bg-stone-900 text-white px-8 py-4 rounded-full hover:bg-stone-800 font-semibold text-lg flex items-center gap-2 cursor-pointer shadow-md"
         >
           <Plus className="w-5 h-5" /> Create Course
         </button>

@@ -36,7 +36,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
         <p className="text-stone-500 font-medium mt-1 text-lg">Term {course.term}</p>
       </div>
 
-      <div className="flex justify-between items-center mt-6 pt-4 border-t border-stone-50 z-20">
+      <div className="flex justify-between items-center mt-6 pt-4 border-t border-stone-50">
         <span className="text-stone-500 font-medium">
           {course._count.materials} {course._count.materials === 1 ? 'Material' : 'Materials'}
         </span>
